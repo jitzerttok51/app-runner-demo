@@ -63,11 +63,16 @@ jobs:
         run: terraform apply -target=output.ecr-token -auto-approve
         working-directory: ./infrastructure    
 
-      - name: Terraform Output
-        id: output
+      - name: Terraform Output ECR Token
+        id: output-token
         run: |
-          echo "ecr-token=$((terraform output -raw ecr-token))" >> "$GITHUB_OUTPUT"
-          echo "ecr-path=$((terraform output -raw app-repository-path))" >> "$GITHUB_OUTPUT"
+          echo -n "ecr-token=$(terraform output -raw ecr-token | tr -d '\n')" >> "$GITHUB_OUTPUT"
+        working-directory: ./infrastructure
+
+      - name: Terraform Output ECR Path
+        id: output-path
+        run: |
+          echo -n "ecr-path=$(terraform output -raw ecr-path | tr -d '\n')" >> "$GITHUB_OUTPUT"
         working-directory: ./infrastructure
 
       - name: Set up JDK 11
@@ -81,6 +86,6 @@ jobs:
       - name: Boot build image
         run: |
           ./gradlew \
-          -Pecr.image.name=${{ steps.output.outputs.ecr-path }}/web-app \
-          -Pecr.token=${{ steps.output.outputs.ecr-token }} \
+          -Pecr.image.name=${{ steps.output-path.outputs.ecr-path }}/web-app \
+          -Pecr.token=${{ steps.output-token.outputs.ecr-token }} \
           bootBuildImage
