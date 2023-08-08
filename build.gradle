@@ -23,3 +23,43 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+String msrVersion = {
+    String major = project.property 'build.version.major'
+    String minor = project.property 'build.version.minor'
+    String build = project.property 'build.number'
+
+    "$major.$minor.$build"
+}()
+
+bootJar {
+    manifest.attributes (
+            'Implementation-Version': "$msrVersion"
+    )
+}
+
+springBoot {
+    mainClass = 'com.softwareag.plm.sum.server.repository.RepositoryApplication'
+    buildInfo {
+        version = msrVersion
+    }
+}
+
+def props = project.properties
+bootBuildImage {
+    String name = props.getOrDefault("ecr.image.name", project.name).toString().toLowerCase()
+    String tag = props.getOrDefault("ecr.image.version", msrVersion)
+    imageName = "$name:$tag"
+    logger.lifecycle "Image name: $imageName"
+    buildpacks = [
+            "gcr.io/paketo-buildpacks/azul-zulu",
+            "gcr.io/paketo-buildpacks/java:7.0.0"
+    ]
+    println getBuildpacks()
+    verboseLogging = true
+    publish = !Boolean.parseBoolean(props.getOrDefault("ecr.no.publish", null))
+    docker.publishRegistry {
+        username = props.getOrDefault("ecr.username", "AWS")
+        password = props.getOrDefault("ecr.token", null)
+    }
+}
