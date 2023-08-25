@@ -7,8 +7,8 @@ on:
   # pull_request:
   workflow_dispatch:
     inputs:
-      apply:
-        description: Terraform apply
+      ecr-only:
+        description: ECR only
         type: boolean
         required: true
 
@@ -63,3 +63,21 @@ jobs:
         run: terraform plan -no-color
         working-directory: ./infrastructure
         #continue-on-error: true
+
+      - name: Terraform Create ECR
+        id: apply-ecr
+        run: |
+         terraform apply \
+         -target=aws_ecr_repository.app-repository \
+         -target=aws_iam_role.ecr-user \
+         -target=aws_iam_role_policy_attachment.test-attach \
+         -auto-approve
+
+        working-directory: ./infrastructure
+        #continue-on-error: true
+      
+      - name: Terraform Apply
+        id: apply
+        if: ${{ inputs.ecr-only == false }}
+        run: terraform apply -auto-approve
+        working-directory: ./infrastructure

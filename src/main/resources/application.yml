@@ -1,0 +1,6 @@
+server.port: 8090
+
+management:
+  endpoints.web.exposure.include: health,info,mappings,prometheus,metrics,threaddump,logfile,env,auditevents,loggers,features
+  endpoints.jmx.exposure.exclude: "*"
+  endpoint.health.show-details: never
