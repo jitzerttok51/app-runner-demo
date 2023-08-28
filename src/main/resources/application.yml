@@ -4,3 +4,9 @@ management:
   endpoints.web.exposure.include: health,info,mappings,prometheus,metrics,threaddump,logfile,env,auditevents,loggers,features
   endpoints.jmx.exposure.exclude: "*"
   endpoint.health.show-details: never
+
+spring.data.mongodb:
+  uri: ${MONGODB_CONNECTION_STRING}
+  username: ${MONGODB_CONNECTION_USER}
+  password: ${MONGODB_CONNECTION_PASS}
+  database: "myFirstProject-db"
