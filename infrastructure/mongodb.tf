@@ -74,9 +74,10 @@ resource "mongodbatlas_privatelink_endpoint_service" "atlaseplink" {
 }
 
 locals {
-  mongodb_user = mongodbatlas_database_user.db-user.username
-  mongodb_pass = mongodbatlas_database_user.db-user.password
-  mongodb_url  = lookup(mongodbatlas_advanced_cluster.atlas-cluster.connection_strings[0].aws_private_link_srv, aws_vpc_endpoint.ptfe_service.id)
+  mongodb_auth_url=replace(
+    lookup(mongodbatlas_advanced_cluster.atlas-cluster.connection_strings[0].aws_private_link_srv, aws_vpc_endpoint.ptfe_service.id), 
+  "mongodb+srv://", 
+  "mongodb+srv://${mongodbatlas_database_user.db-user.username}:${mongodbatlas_database_user.db-user.password}@")
 }
 
 # output "username" {

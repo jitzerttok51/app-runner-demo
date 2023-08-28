@@ -21,9 +21,7 @@ resource "aws_apprunner_service" "hello" {
         port = "8090" #The port that your application listens to in the container
 
         runtime_environment_variables = {
-          "MONGODB_CONNECTION_STRING" = local.mongodb_url
-          "MONGODB_CONNECTION_USER"   = local.mongodb_user
-          "MONGODB_CONNECTION_PASS"   = local.mongodb_pass
+          "MONGODB_CONNECTION_STRING" = local.mongodb_auth_url
         }
       }
 

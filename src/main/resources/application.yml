@@ -7,6 +7,4 @@ management:
 
 spring.data.mongodb:
   uri: ${MONGODB_CONNECTION_STRING}
-  username: ${MONGODB_CONNECTION_USER}
-  password: ${MONGODB_CONNECTION_PASS}
   database: "myFirstProject-db"
