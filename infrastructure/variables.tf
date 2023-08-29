@@ -7,3 +7,9 @@ variable "ecr-repository-name" {
   type        = string
   description = "The name of the ECR Repository"
 }
+
+variable "pause-services" {
+  type        = bool
+  default     = false
+  description = "Pause services"
+}

@@ -30,6 +30,7 @@ resource "mongodbatlas_database_user" "db-user" {
 # }
 
 resource "mongodbatlas_advanced_cluster" "atlas-cluster" {
+  paused       = var.pause-services
   project_id   = mongodbatlas_project.atlas-project.id
   name         = "${mongodbatlas_project.atlas-project.name}-dev-cluster"
   cluster_type = "REPLICASET"
@@ -74,9 +75,9 @@ resource "mongodbatlas_privatelink_endpoint_service" "atlaseplink" {
 }
 
 locals {
-  mongodb_auth_url=replace(
-    lookup(mongodbatlas_advanced_cluster.atlas-cluster.connection_strings[0].aws_private_link_srv, aws_vpc_endpoint.ptfe_service.id), 
-  "mongodb+srv://", 
+  mongodb_auth_url = replace(
+    lookup(mongodbatlas_advanced_cluster.atlas-cluster.connection_strings[0].aws_private_link_srv, aws_vpc_endpoint.ptfe_service.id),
+    "mongodb+srv://",
   "mongodb+srv://${mongodbatlas_database_user.db-user.username}:${mongodbatlas_database_user.db-user.password}@")
 }
 
