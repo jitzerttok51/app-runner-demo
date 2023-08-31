@@ -8,6 +8,8 @@ resource "aws_apprunner_auto_scaling_configuration_version" "hello" {
   # scale between 1-5 containers
   min_size = 1
   max_size = 5
+
+  max_concurrency = 200
 }
 
 resource "aws_apprunner_service" "hello" {
@@ -20,7 +22,7 @@ resource "aws_apprunner_service" "hello" {
       image_configuration {
         port = "8090" #The port that your application listens to in the container
 
-        runtime_environment_variables = {
+        runtime_environment_secrets = {
           "MONGODB_CONNECTION_STRING" = local.mongodb_auth_url
         }
       }
