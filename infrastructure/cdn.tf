@@ -1,11 +1,3 @@
-resource "aws_cloudfront_origin_access_control" "cloudfront_s3_oac" {
-  name                              = "CloudFront S3 OAC"
-  description                       = "Cloud Front S3 OAC"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
 resource "aws_cloudfront_origin_access_identity" "ads-storage-access" {
   comment = "ads-storage-access"
 }
@@ -30,14 +22,12 @@ resource "aws_s3_bucket_policy" "example" {
   policy = data.aws_iam_policy_document.ads-storage-policy.json
 }
 
-resource "aws_cloudfront_distribution" "my_distrib" {
+resource "aws_cloudfront_distribution" "cdn_distrib" {
 
   origin {
     domain_name = aws_s3_bucket.ads-storage.bucket_regional_domain_name
     origin_id   = "s3Primary"
-    # origin_path = "/ads"
 
-    # origin_access_control_id = aws_cloudfront_origin_access_control.cloudfront_s3_oac.id
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.ads-storage-access.cloudfront_access_identity_path
     }
@@ -77,5 +67,5 @@ resource "aws_cloudfront_distribution" "my_distrib" {
 }
 
 output "cdn-url" {
-  value = "https://${aws_cloudfront_distribution.my_distrib.domain_name}"
+  value = "https://${aws_cloudfront_distribution.cdn_distrib.domain_name}"
 }

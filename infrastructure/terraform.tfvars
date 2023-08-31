@@ -1,2 +1,2 @@
-app-runner-name     = "hello-app-runner"
-ecr-repository-name = "app-repository"
+app-runner-name     = "emotiai-app"
+ecr-repository-name = "emotiai-app-repository"
